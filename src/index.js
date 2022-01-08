@@ -10,32 +10,25 @@ const numbersMapping = {
 };
 
 
-let getDigit = (number, base) => Math.floor((number - number % base) / base);
-let joinElements = (arr) => arr.join(" ");
-
-
 module.exports = function toReadable(number){
-    if (!number){ return numbersMapping[number]; }
+    const maxDigitsNumber = 100;
+    if (number < maxDigitsNumber && numbersMapping[number] != undefined){ return numbersMapping[number]; }
 
     let result = [];
-    if (number >= 100){
-        result.push(numbersMapping[getDigit(number, 100)]);
-        result.push(numbersMapping[100]);
+    if (number >= maxDigitsNumber){
+        result.push(numbersMapping[Math.floor((number - number % maxDigitsNumber) / maxDigitsNumber)]);
+        result.push(numbersMapping[maxDigitsNumber]);
     }
 
-    number %= 100;
-    if (!number){ return joinElements(result); }
-
-    if (number < 20){
-        result.push(numbersMapping[number]);
-    }
-    else {
+    number %= maxDigitsNumber;
+    if (number > 20){
         result.push(numbersMapping[number - number % 10]);
         number %= 10;
-        if (number){
-            result.push(numbersMapping[number]);
-        }
     }
 
-    return joinElements(result);
+    if (number){
+        result.push(numbersMapping[number]);
+    }
+
+    return result.join(" ");
 }
